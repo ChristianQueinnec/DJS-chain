@@ -1,14 +1,15 @@
 /* eslint-env node */
 
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var eslint = require('gulp-eslint');
-var browserify = require('browserify');
-var buffer = require('vinyl-buffer');
-var transform = require('vinyl-transform');
-var source = require('vinyl-source-stream');
-var babelify = require('babelify');
-var sourcemaps = require('gulp-sourcemaps');
+const gulp = require('gulp');
+const concat = require('gulp-concat');
+const eslint = require('gulp-eslint');
+const browserify = require('browserify');
+const buffer = require('vinyl-buffer');
+const transform = require('vinyl-transform');
+const source = require('vinyl-source-stream');
+const babelify = require('babelify');
+const sourcemaps = require('gulp-sourcemaps');
+const shell = require('gulp-shell');
 
 gulp.task('default', ['lint', 'scripts']);
 // regenerate for distribution:
@@ -65,5 +66,12 @@ gulp.task('scripts-dist', function () {
         .pipe(sourcemaps.write('./maps'))
         .pipe(gulp.dest('./Site/dist/js'));
 });
+
+gulp.task('watch', function () {
+    gulp.watch('src/*.js', ['lint', 'scripts']);
+    gulp.watch('spec/*-spec.js', ['tests']);
+});
+
+gulp.task('tests', shell.task(['make tests']));
 
 // end of gulpfile.js
