@@ -81,7 +81,7 @@ describe("Web", function () {
         let faildone = mkfaildone(done);
         let server = web.mkserver(localport, {});
         http.get(`${localurlbase}/`, (response) => {
-            expect(response.statusCode).toBe(400);
+            expect(response.statusCode).toBe(405);
             server.close(mkServerCloseHandler(done));
         });
     });

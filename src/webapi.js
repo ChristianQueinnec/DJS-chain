@@ -107,7 +107,7 @@ function mkHandler (routes) {
         if ( routes[request.method] ) {
             return choose(routes[request.method], req.pathname);
         } else {
-            return handlerDefault(request, response, 400, "Unsupported method");
+            return handlerDefault(request, response, 405, "Unsupported method");
         }
     };
 }
