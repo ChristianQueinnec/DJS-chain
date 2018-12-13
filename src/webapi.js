@@ -87,7 +87,10 @@ function handlerDefault (request, response, code, message) {
 function mkHandler (routes) {
     return function handler (request, response) {
         function choose(sroutes, pathname) {
-            //console.log(`Serving ${pathname}...`);//
+            if ( routes.verbose ) {
+                // eslint-disable-next-line
+                //console.log(`HTTP: Serving ${pathname}...`);
+            }
             for ( let sroute of sroutes ) {
                 //console.log(`Trying ${route.regexp}...`);//
                 let matches = sroute.regexp.exec(pathname);
@@ -100,7 +103,10 @@ function mkHandler (routes) {
                     }
                 }
             }
-            //console.log(`No route for ${pathname}`);//
+            if ( routes.verbose ) {
+                // eslint-disable-next-line no-console: "off"
+                //console.log(`HTTP: No route for ${pathname}`);
+            }
             return handlerDefault(request, response, 400, "No route");
         }
         let req = url.parse(request.url);
@@ -209,7 +215,7 @@ function generateRoutes (db) {
             }});
         // get one object:
         routes.GET.push({
-            regexp: new RegExp(`^/${table.name}s/(\\d+)/?$`),
+            regexp: new RegExp(`^/${table.name}s?/(\\d+)/?$`),
             reaction: function (matches, request, response) {
                 //console.log(`id: ${parseInt(matches[1])}`);
                 return table.get(parseInt(matches[1]))
@@ -258,7 +264,7 @@ function generateRoutes (db) {
             }});
         // replace or create an object:
         routes.PUT.push({
-            regexp: new RegExp(`^/${table.name}s/(\\d+)/?$`),
+            regexp: new RegExp(`^/${table.name}s?/(\\d+)/?$`),
             reaction: function (matches, request, response) {
                 let body = '';
                 request.on('data', (chunk) => { body += chunk; });
@@ -301,7 +307,7 @@ function generateRoutes (db) {
             }});
         // delete an object:
         routes.DELETE.push({
-            regexp: new RegExp(`^/${table.name}s/(\\d+)/?$`),
+            regexp: new RegExp(`^/${table.name}s?/(\\d+)/?$`),
             reaction: function (matches, request, response) {
                 let id = parseInt(matches[1]);
                 return table.get(id)
@@ -323,7 +329,7 @@ function generateRoutes (db) {
     function generateColumnRoutes (table, column) {
         // Get one property of an object:
         routes.GET.push({
-            regexp: new RegExp(`^/${table.name}s/(\\d+)/${column.name}/?$`),
+            regexp: new RegExp(`^/${table.name}s?/(\\d+)/${column.name}/?$`),
             reaction: function (matches, request, response) {
                 return table.get(parseInt(matches[1]))
                     .then(function (so) {
@@ -344,7 +350,7 @@ function generateRoutes (db) {
             }});
         // modify one property of an object:
         routes.PUT.push({
-            regexp: new RegExp(`^/${table.name}s/(\\d+)/${column.name}/?$`),
+            regexp: new RegExp(`^/${table.name}s?/(\\d+)/${column.name}/?$`),
             reaction: function (matches, request, response) {
                 let body = '';
                 request.on('data', (chunk) => { body += chunk; });

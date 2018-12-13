@@ -14,7 +14,7 @@ start.server :
 
 build.webapp :
 	-rm -rf Site/dist
-	gulp
+#	node_modules/.bin/gulp
 
 lint : lint.with.jshint lint.with.eslint 
 lint.with.jshint :
@@ -22,13 +22,13 @@ lint.with.jshint :
 	node_modules/.bin/jshint Site/js/*.js
 lint.with.eslint :
 	node_modules/.bin/eslint src/*.js
-	node_modules/.bin/eslint Site/*.js
+	node_modules/.bin/eslint Site/js/*.js
 
 nsp+snyk :
 	npm link nsp
 	node_modules/.bin/nsp check
-	npm link snyk
-	-node_modules/.bin/snyk test djs-chain
+#	npm link snyk
+#	-node_modules/.bin/snyk test djs-chain
 
 propagate.git : lint build.webapp
 	mkdir -p ${TMP}
@@ -50,7 +50,7 @@ propagate.git : lint build.webapp
 # Caution: npm takes the whole directory that is . and not the sole
 # content of DJS-chain.tgz 
 
-publish : lint nsp+snyk clean propagate.git do.publish
+publish : lint clean propagate.git do.publish
 do.publish :
 	cd ${TMP}/ && git status .
 	-cd ${TMP}/ && git commit -m "NPM publication `date`" .
